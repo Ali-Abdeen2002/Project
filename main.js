@@ -42,80 +42,85 @@
 
 //const fs = require('fs');
 
-import fs, { writeFile } from 'fs'
-import {sayHello} from './TEST.js';
+
+import {menu,ReadFile,WriteFile,getLastId,menuSearch} from './functions.js';
 import prompt from 'prompt-sync';
+import { insert,Select,Update,Delete,SelectBysearch} from './curd.js';
 const input=prompt();
- function ReadFile()
-{
-    let p=Promise=new Promise((resolve,reject) => {
-        if(fs.existsSync('JsonMovie.json'))
-        {
-           
-            fs.readFile('JsonMovie.json','utf-8',(err,data)=>{
-                if(err)
-                {
-                    console.log("something wrong");
-                    console.log(err.message)
-                    reject("some thing wrong");
-                }
-                else
-                {
-                    
-                    resolve(JSON.parse(data.toString()))   
-                }
-            })
-        }
-        else
-        {
-            fetch('https://download1486.mediafire.com/3spctzf2mdcgBwXAvk2FbQue_s2-C97N7U_qgFIhaHtn3toyuXNGekUVVCW7kxCqxEBp-2vbx_f-83Zg77UG4I9fQiRvDciv7Mnpo7eKqo51Bol4qcrVHRQvy5CHP-MxpgtLWBn_Yr1gOuT9st-j4CYQT9u2NL1XrRLGzV2FmF2x-YM/12z29xffio1rwji/MOCK_DATA.json',{metho:'GET'})
-      .then(response => response.json())
-      .then(json => {
-        console.log(json);
-        console.log("/////////////////");
-        
-        
-        }).catch(error=>{
-        console.log(error)
-        console.log("Failed to Get the Data from the api")
-      })
-        }
-    }
-    )
-    return p;
-}
 
-
-function WriteFile(data)
-{
-    
-    data=JSON.stringify(data);
-    fs.writeFile('JsonMovie.json',data,'utf-8',(err)=>{
-        if(err)
-        {
-            console.log("something wrong");
-            console.log(err.message);
-        }
-    })
-
-    
-}
  
 (async ()=>{
-    console.log("*****************")
-    console.log(sayHello())
-    console.log("*****************")
+    // console.log("*****************")
+    // console.log(sayHello())
+    // console.log("*****************")
     let alldata=await ReadFile();
     console.log(alldata)
-    WriteFile(alldata)
-    fs.writeFile('aaaaaaa.txt',"hello",'utf-8',(err=>{
+   /* console.log("!!!!!!!!!!!!!!!")
+    console.log(await WriteFile(alldata));
+    console.log("!!!!!!!!!!!!!!!")*/
+    let Max=getLastId(alldata);
+    console.log(Max);
+    let choice=0;
 
-    }));
-    let i=0;
-    while(i!=4)
+    while(choice!=6)
     {
         
+       await WriteFile(alldata);
+        menu();
+        choice=input("Enter choice: ");
+        if(choice==1)
+        {
+            Select(alldata);
+        }
+       else if(choice==2)
+        {
+           alldata=insert(alldata,++Max);
+        }
+        else if(choice==3)
+        {
+            let ID=input("enter the id of the movie you want to update ")
+            ID=Update(alldata,ID);
+        }
+        else if(choice==4)
+        {
+            let ID=input("enter the id of the movie you want to Delete ")
+            ID=Delete(alldata,ID);
+        }
+        else if(choice==5)
+        {
+               menuSearch();
+               let Select=input("Enter the number ");
+               if(Select==1)
+               {
+                let val=input("enter the movie name ");
+                SelectBysearch(alldata,1,val)
+               }
+               else if(Select==2)
+               {
+                let val=input("enter the movie director ");
+                SelectBysearch(alldata,2,val)
+               }
+               else if(Select==3)
+               {
+                let val=input("enter the movie genre ");
+                SelectBysearch(alldata,3,val)
+               }
+               else if(Select==4)
+               {
+                let val=input("enter the movie year ");
+                SelectBysearch(alldata,4,val)
+               }
+               else if(Select==5)
+               {
+                let val=input("enter the movie genre ");
+                SelectBysearch(alldata,5,val)
+               }
+
+        }
     }
+    
+   
+   
 })()
 
 
